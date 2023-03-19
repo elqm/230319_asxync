@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const { useState } = React;
+
+        function SearchBox ({ movieTitle, setMovieTitle }) {
+
+            const [movieDate, setMovieDate] = useState('');
+            const [movieRank, setMovieRank] = useState('');
+
+            const onClickhandler = () => {
+                axios.get(`http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=${movieDate}`)
+                    .then(res => setMovieTitle(res.data.boxOfficeResult.dailyBoxOfficeList[movieRank -1])),
+                    [];
+                    
+            }
+
+            return (
+                <>
+                    <label>날짜 입력 </label>
+                    <input
+                        type="search"
+                        name="movieDate"
+                        value={ movieDate }
+                        onChange={ e => setMovieDate(e.target.value) }
+                    />
+                    <br/>
+                    <label>순위 입력 </label>
+                    <input
+                        type="search"
+                        name="movieRank"
+                        value={ movieRank }
+                        onChange={ e => setMovieRank(e.target.value) }
+                    />
+                    <button onClick={ onClickhandler }>조회</button>
+
+                    <div>
+                        { movieTitle.map(movie => <Item movie={ movie } key={ movie.rnum }/>)}
+                    </div>
+                </>
+            );
+        }
+
+        function NameBox({ movieTitle }) {
+
+            return (
+                <div className="item">
+                    <h4>{ movieTitle.movieNm }</h4>
+                    <p>
+                        openDt : { movieTitle.openDt } <br/>
+                    </p>
+                </div>
+            );
+        }
+
+        function App() {
+
+            const [movieTitle, setMovieTitle] = useState('');
+
+            return (
+                <>
+                    <SearchBox movieTitle={ movieTitle } setMovieTitle={ setMovieTitle }/>
+                    <br/>
+                    <NameBox movieTitle={ movieTitle }/>
+                </>
+            );
+
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+    </script>
+</body>
+</html>

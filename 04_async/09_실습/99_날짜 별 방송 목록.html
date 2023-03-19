@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            width: 100%;
+            background: black;
+        }
+
+        .item {
+            background: black;
+            border: 1px solid white;
+            width: 400px;
+            margin: 10px;
+            color: white;
+            font-family: '굴림';
+            text-align: center;
+        }
+
+        .title {
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: white;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const { useState, useEffect } = React;
+
+        function Header() {
+
+            return (
+                <>
+                    <h1 className="title">날짜 별 TV 프로그램 목록</h1>
+                    <hr/>
+                </>
+            );
+        }
+        
+        function Content() {
+
+            return (
+                <div>
+                    <br/><br/>
+                    <DramaList/>
+                </div>
+            );
+        }
+
+        function Drama({ drama }) {
+
+            return (
+                <div className="item">
+                    <h4>영제 : { drama.show.name }</h4>
+                    <img src={ drama.show.image  === null? './not-found.png': drama.show.image.original } width="300px" height="400px"/>
+                    <p>
+                        장르 : { drama.show.type } / { drama.show.genres } <br/>
+                        방송사 : { drama.show.network === null? '(미기입)': drama.show.network.name } <br/>
+                        방송 기간 : { drama.show.premiered } ~ { drama.show.ended } <br/>
+                        방송 요일/시간 : { drama.show.schedule.days } / { drama.show.schedule.time } <br/>
+                        시즌/회차 : 시즌{ drama.season } / { drama.number }회 <br/>
+                        상세 정보 검색 ID : { drama.show.id }
+                    </p>
+                </div>
+            );
+        }
+
+        function DramaList() {
+
+            const [dramas, setDramas] = useState([]);
+
+            useEffect(
+                () => {
+                    fetch('https://api.tvmaze.com/schedule?country=KR&date=2023-03-15')
+                        .then(res => res.json())
+                        .then(resdrama => setDramas(resdrama))
+                },
+                []
+            );
+
+            return (
+                <div className="content">
+                    { dramas.map(drama => <Drama drama={ drama } key={ drama.id }/>) }
+                </div>
+            );
+        }
+
+        function App() {
+
+            return (
+                <>
+                    <Header/>
+                    <Content/>
+                </>
+            );
+
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+</body>
+</html>

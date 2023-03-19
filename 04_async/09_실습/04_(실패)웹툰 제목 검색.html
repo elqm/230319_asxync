@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const { useState, useEffect } = React;
+
+        function SearchBox() {
+
+            const [webtoonTitle, setWebtoonTilte] = useState('');
+            const [webtoonInfo, setWebtoonInfo] = useState('');
+
+            const onClickhandler = () => {
+                useEffect(
+                    () => {
+                        fetch(`https://korea-webtoon-api.herokuapp.com/search?keyword=${webtoonTitle}`)
+                            .then(res => res.json())
+                            .then(resWebtoon => setWebtoonInfo(resWebtoon.webtoons))
+                    },
+                    []
+                );
+            }
+
+            return (
+                <>
+                    <label>웹툰 제목 입력 </label>
+                    <input
+                        type="text"
+                        name="webtoonTitle"
+                        value={webtoonTitle}
+                        onChange={e => setWebtoonTitle(e.target.value)}
+                    />
+                    &nbsp;
+                    <button onClick={onClickhandler}>검색</button>
+                    <div>
+                        {webtoons.map(webtoon => <WebtoonBox webtoon={webtoon} key={webtoon.webtoonId} />)}
+                    </div>
+                </>
+            );
+        }
+
+        function WebtoonBox({ webtoon }) {
+
+            return (
+                <div className="item">
+                    <h4>{webtoon.title}</h4>
+                    <p>
+                        작가 : {webtoon.author} <br />
+                        <img src={webtoon.img} width="200" height="200" /> <br />
+                        {webtoon.url} <br />
+                        service : {webtoon.sevice} <br />
+                    </p>
+                </div>
+            );
+        }
+
+        function App() {
+
+            return (
+                <>
+                    <SearchBox />
+                    <br />
+                    <WebtoonBox />
+                </>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+
+</html>

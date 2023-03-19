@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .item {
+            background: lightyellow;
+            border: 1px solid black;
+            width: 200px;
+            display: inline-block;
+            margin: 10px;
+            font-family: '굴림';
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const { useState, useEffect } = React;
+
+        function Item() {
+
+            let randomNum = (Math.floor(Math.random() * 100 - 1) + 1);
+
+            return (
+                <div className="item">
+                        <img src={ `https://randomfox.ca/images/${randomNum}.jpg` } width="200" height="200"/> <br/>
+                </div>
+            );
+        }
+
+        function Title() {
+
+            return <h1>여우 랜덤 이미지 발생</h1>;
+        }
+
+        function App() {
+
+            return (
+                <>
+                    <Title/>
+                    <Item/>
+                </>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+</body>
+</html>
